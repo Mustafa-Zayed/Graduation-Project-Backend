@@ -29,11 +29,7 @@ public class UserService {
         User admin = new User("Mustafa2002", "mustafa", "zayed", "mustafa@pass");
         admin.addRole(adminRole);
         userDao.save(admin);
-//        User admin=new User();
-//        admin.setUserName("Mustafa2002");
-//        admin.setUserPassword("mustafa@pass");
-//        admin.setUserFirstName("mustafa");
-//        admin.setUserLastName("zayed");
+
         // default user in the app
         User user = new User("Moaz2002", "moaz", "ehab", "moaz@pass");
         user.addRole(userRole);
