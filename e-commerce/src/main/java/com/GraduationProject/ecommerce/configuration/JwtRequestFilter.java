@@ -43,7 +43,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         final String header = request.getHeader("Authorization");
         String jwtToken = null;
@@ -62,8 +63,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         } else {
             System.out.println("JWT token does not start with Bearer");
-            // filterChain.doFilter(request,response);
-            // return;
+            filterChain.doFilter(request, response);
+            return;
         }
 
         // Check that the user is not authenticated yet. If authenticated, I don't need to perform
@@ -74,7 +75,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             // So once the user is not authenticated,
             // we need to check if we have the user within the database.
-            UserDetails userDetails = jwtService.loadUserByUsername(userName);
+            UserDetails userDetails = jwtService.loadUserByUsername(userName); // = userDao.findById(userName).get()
 
             if (jwtUtil.validateToken(jwtToken, userDetails)) {
 
@@ -91,10 +92,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // Here, we store the new authentication token and authenticate the request.
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-            filterChain.doFilter(request, response);
-
         }
-
-
+        filterChain.doFilter(request, response);
     }
 }

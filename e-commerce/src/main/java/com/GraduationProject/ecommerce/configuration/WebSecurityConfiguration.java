@@ -1,6 +1,5 @@
 package com.GraduationProject.ecommerce.configuration;
 
-import com.GraduationProject.ecommerce.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +28,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * It is primarily used with annotations like @PreAuthorize and @PostAuthorize to specify
  * the required permissions for using methods in the service layer or any point in the application
  * where permission checks are required.
+ * <p>
+ * If you don't provide @EnableGlobalMethodSecurity annotation, @PreAuthorize and @PostAuthorize will do so without any benefit.
  */
 
 @Configuration
@@ -78,7 +79,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors();
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("").permitAll()
+                .authorizeRequests().antMatchers("/authenticate", "/registerNewUser").permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
                 .and()
