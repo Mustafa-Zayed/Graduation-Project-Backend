@@ -33,10 +33,14 @@ public class UserController {
         return userService.registerNewUser(user);
     }
 
-    // two endpoints to test authorization on
+    // We can dispense @PreAuthorize by configuring access-control or authorization
+    // in WebSecurityConfiguration class like that:
+    //.antMatchers("/forAdmin").hasRole("Admin")
+    //.antMatchers("/forUser").hasRole("User")
+
+    // Two endpoints to test authorization on.
     @GetMapping("/forAdmin")
-    @PreAuthorize("hasRole('Admin')")
-    // Annotation for specifying a method access-control expression, which will be evaluated to decide whether a method invocation is allowed or not.
+    @PreAuthorize("hasRole('Admin')") // Annotation for specifying a method access-control expression, which will be evaluated to decide whether a method invocation is allowed or not.
     public String forAdmin(){
         return "This URL is only accessible to the admin";
     }
