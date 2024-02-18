@@ -1,9 +1,8 @@
 package com.GraduationProject.ecommerce.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Product {
@@ -16,11 +15,19 @@ public class Product {
     private String productDescription;
     private Double productActualPrice;
     private Double productDiscountedPrice;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // In this state, it's better to use @OneToMany relationship.
+    @JoinTable(
+            name = "product_images",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id")
+    )
+    private Set<ImageModel> productImages; // Set not List-> to prevent images duplication.
 
     // constructors
+    public Product() {
+    }
 
-
-    public Product() {}
     public Product(String productName, String productDescription, Double productActualPrice, Double productDiscountedPrice) {
         this.productName = productName;
         this.productDescription = productDescription;
@@ -28,9 +35,15 @@ public class Product {
         this.productDiscountedPrice = productDiscountedPrice;
     }
 
+    // convenient method to add images
+    public void addImageModel(ImageModel imageModel) {
+        if (productImages == null)
+            productImages = new HashSet<>();
+
+        productImages.add(imageModel);
+    }
+
     // getters & setters
-
-
     public Integer getProductId() {
         return productId;
     }
@@ -69,5 +82,13 @@ public class Product {
 
     public void setProductDiscountedPrice(Double productDiscountedPrice) {
         this.productDiscountedPrice = productDiscountedPrice;
+    }
+
+    public Set<ImageModel> getProductImages() {
+        return productImages;
+    }
+
+    public void setProductImages(Set<ImageModel> productImages) {
+        this.productImages = productImages;
     }
 }
