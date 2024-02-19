@@ -5,6 +5,8 @@ import com.GraduationProject.ecommerce.entity.Product;
 import com.GraduationProject.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -20,7 +23,7 @@ public class ProductController {
     private ProductService productService;
 
     /*@PostMapping(value = "/addNewProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public String addNewProduct(
+        public Product addNewProduct(
                 @RequestParam("productName") String productName,
                 @RequestParam("productDescription") String productDescription,
                 @RequestParam("productActualPrice") Double productActualPrice,
@@ -34,6 +37,7 @@ public class ProductController {
             return productService.addNewProduct(product, files);
         }*/
     // best name convention is "/product/add"
+    @PreAuthorize("hasRole('Admin')")
     @PostMapping(value = {"/addNewProduct"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public Product addNewProduct(@RequestPart("product") Product product,
                                  @RequestPart("imageFile") MultipartFile[] file) {
@@ -51,7 +55,7 @@ public class ProductController {
     public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {
         Set<ImageModel> imageModels = new HashSet<>();
 
-        for (MultipartFile file: multipartFiles) {
+        for (MultipartFile file : multipartFiles) {
             ImageModel imageModel = new ImageModel(
                     file.getOriginalFilename(),
                     file.getContentType(),
@@ -61,6 +65,11 @@ public class ProductController {
         }
 
         return imageModels;
+    }
+
+    @GetMapping("/getAllProducts")
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
 

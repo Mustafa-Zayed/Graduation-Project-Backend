@@ -32,7 +32,7 @@ public class UserService {
 //        roleDao.save(userRole); // we can dispense this because of cascade.PERSIST as it will automatically save Set<Role> roles after saving the user to the db
 
         // default admin in the app
-        User admin = new User("Mustafa2002", "mustafa", "zayed", getEncodedPassword("mustafa@pass"));
+        User admin = new User("MustafaZ", "mustafa", "zayed", getEncodedPassword("mustafa@pass"));
         admin.addRole(adminRole);
         userDao.save(admin);
 

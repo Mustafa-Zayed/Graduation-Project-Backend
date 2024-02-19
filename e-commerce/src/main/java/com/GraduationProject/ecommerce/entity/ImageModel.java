@@ -8,7 +8,7 @@ public class ImageModel {
 
     // fields
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // GenerationType.AUTO
+    @GeneratedValue(strategy = GenerationType.AUTO) // GenerationType.IDENTITY
     private Long id;
     private String name;
     private String type;
