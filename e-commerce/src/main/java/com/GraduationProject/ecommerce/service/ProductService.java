@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -19,7 +16,7 @@ public class ProductService {
     @Autowired
     private ProductDao productDao;
 
-    /*public Product addNewProduct(Product product, MultipartFile[] files) throws IOException {
+    public Product addNewProduct(Product product, MultipartFile[] files) throws IOException {
 
         for(MultipartFile file : files){
             ImageModel imageModel=new ImageModel(
@@ -30,20 +27,7 @@ public class ProductService {
             product.addImageModel(imageModel);
         }
         return productDao.save(product);
-    }*/
-    /*public String addNewProduct(Product product, MultipartFile[] files) throws IOException {
-
-        for (MultipartFile file : files) {
-            ImageModel imageModel = new ImageModel(
-                    file.getOriginalFilename(),
-                    file.getContentType(),
-                    file.getBytes()
-            );
-            product.addImageModel(imageModel);
-        }
-        productDao.save(product);
-        return "file uploaded successfully";
-    }*/
+    }
 
     public Product addNewProduct(Product product) {
         return productDao.save(product);

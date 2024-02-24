@@ -1,6 +1,5 @@
 package com.GraduationProject.ecommerce.controller;
 
-import com.GraduationProject.ecommerce.entity.ImageModel;
 import com.GraduationProject.ecommerce.entity.Product;
 import com.GraduationProject.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 public class ProductController {
     @Autowired
     private ProductService productService;
 
-    /*@PostMapping(value = "/addNewProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // best name convention is "/product/add"
+    @PreAuthorize("hasRole('Admin')")
+    @PostMapping(value = "/addNewProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         public Product addNewProduct(
                 @RequestParam("productName") String productName,
                 @RequestParam("productDescription") String productDescription,
@@ -32,8 +31,8 @@ public class ProductController {
 
             // Call the productService to add the new product
             return productService.addNewProduct(product, files);
-        }*/
-    // best name convention is "/product/add"
+    }
+    /*// best name convention is "/product/add"
     @PreAuthorize("hasRole('Admin')")
     @PostMapping(value = {"/addNewProduct"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public Product addNewProduct(@RequestPart("product") Product product,
@@ -62,7 +61,7 @@ public class ProductController {
         }
 
         return imageModels;
-    }
+    }*/
 
     @GetMapping("/getAllProducts")
     public List<Product> getAllProducts() {
