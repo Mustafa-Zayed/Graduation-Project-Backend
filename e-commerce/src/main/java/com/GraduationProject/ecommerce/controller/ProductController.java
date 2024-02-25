@@ -79,5 +79,14 @@ public class ProductController {
         return productService.deleteProductDetails(productId);
     }
 
+    /**
+     * The boolean flag indicates whether we check out
+     * a single product if true, or the entire cart if false.
+     */
+    @PreAuthorize("hasRole('User')")
+    @GetMapping("/getProductDetails/{isSingleProductCheckout}/{productId}")
+    public List<Product> getProductDetails(@PathVariable boolean isSingleProductCheckout, @PathVariable Integer productId) {
+        return productService.getProductDetails(isSingleProductCheckout, productId);
+    }
 
 }

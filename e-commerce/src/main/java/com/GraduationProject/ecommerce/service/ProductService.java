@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,8 +19,8 @@ public class ProductService {
 
     public Product addNewProduct(Product product, MultipartFile[] files) throws IOException {
 
-        for(MultipartFile file : files){
-            ImageModel imageModel=new ImageModel(
+        for (MultipartFile file : files) {
+            ImageModel imageModel = new ImageModel(
                     file.getOriginalFilename(),
                     file.getContentType(),
                     file.getBytes()
@@ -37,14 +38,31 @@ public class ProductService {
         return (List<Product>) productDao.findAll();
     }
 
-    public Product getProductDetailsById(Integer productId){
+    public Product getProductDetailsById(Integer productId) {
         return productDao.findById(productId).get();
     }
 
-    public Product deleteProductDetails(Integer productId){
+    public Product deleteProductDetails(Integer productId) {
         Product product = productDao.findById(productId).get();
         productDao.deleteById(productId);
         return product;
     }
 
+    public List<Product> getProductDetails(boolean isSingleProductCheckout, Integer productId) {
+        if (isSingleProductCheckout) {
+            // we are going to buy a single product.
+
+            List<Product> list = new ArrayList<>();
+            Product product = productDao.findById(productId).get();
+            list.add(product);
+            return list;
+
+        } else {
+            // we are going to check out the entire cart.
+
+
+        }
+
+        return new ArrayList<>();
+    }
 }
