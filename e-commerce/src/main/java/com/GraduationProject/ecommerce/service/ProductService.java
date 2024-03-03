@@ -36,9 +36,14 @@ public class ProductService {
         return productDao.save(product);
     }
 
-    public List<Product> getAllProducts(int pageNumber) {
+    public List<Product> getAllProducts(int pageNumber, String searchKey) {
         Pageable pageable = PageRequest.of(pageNumber, 12);
-        return productDao.findAll(pageable);
+
+        if (searchKey.isEmpty()) {
+            return productDao.findAll(pageable);
+        } else {
+            return productDao.findInSearchBox(pageable, searchKey);
+        }
     }
 
     public Product getProductDetailsById(Integer productId) {

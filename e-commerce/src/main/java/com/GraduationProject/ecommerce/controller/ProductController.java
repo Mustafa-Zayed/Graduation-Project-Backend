@@ -19,18 +19,18 @@ public class ProductController {
     // best name convention is "/product/add"
     @PreAuthorize("hasRole('Admin')")
     @PostMapping(value = "/addNewProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public Product addNewProduct(
-                @RequestParam("productName") String productName,
-                @RequestParam("productDescription") String productDescription,
-                @RequestParam("productActualPrice") Double productActualPrice,
-                @RequestParam("productDiscountedPrice") Double productDiscountedPrice,
-                @RequestPart("files") MultipartFile[] files
-        ) throws IOException {
-            // Create a Product object using the received parameters
-            Product product = new Product(productName, productDescription, productActualPrice, productDiscountedPrice);
+    public Product addNewProduct(
+            @RequestParam("productName") String productName,
+            @RequestParam("productDescription") String productDescription,
+            @RequestParam("productActualPrice") Double productActualPrice,
+            @RequestParam("productDiscountedPrice") Double productDiscountedPrice,
+            @RequestPart("files") MultipartFile[] files
+    ) throws IOException {
+        // Create a Product object using the received parameters
+        Product product = new Product(productName, productDescription, productActualPrice, productDiscountedPrice);
 
-            // Call the productService to add the new product
-            return productService.addNewProduct(product, files);
+        // Call the productService to add the new product
+        return productService.addNewProduct(product, files);
     }
     /*// best name convention is "/product/add"
     @PreAuthorize("hasRole('Admin')")
@@ -64,18 +64,22 @@ public class ProductController {
     }*/
 
     @GetMapping("/getAllProducts")
-    public List<Product> getAllProducts(@RequestParam(defaultValue = "0") int pageNumber) {
-        return productService.getAllProducts(pageNumber);
+    public List<Product> getAllProducts(@RequestParam(defaultValue = "0") int pageNumber,
+                                        @RequestParam(defaultValue = "") String searchKey) {
+
+        List<Product> result = productService.getAllProducts(pageNumber, searchKey);
+        System.out.println("Result size is " + result.size());
+        return result;
     }
 
     @GetMapping("/getProductDetailsById/{productId}")
-    public Product getProductDetailsById(@PathVariable Integer productId){
+    public Product getProductDetailsById(@PathVariable Integer productId) {
         return productService.getProductDetailsById(productId);
     }
 
     @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/deleteProductDetails/{productId}")
-    public Product deleteProductDetails(@PathVariable Integer productId){
+    public Product deleteProductDetails(@PathVariable Integer productId) {
         return productService.deleteProductDetails(productId);
     }
 
