@@ -9,12 +9,12 @@ import java.util.List;
  */
 public class OrderInput {
 
-    List<OrderProductQuantity> orderProductQuantityList;
     // fields
     private String fullName;
     private String fullAddress;
     private String contactNumber;
     private String alternateContactNumber;
+    List<OrderProductQuantity> orderProductQuantityList;
 
     public String getFullName() {
         return fullName;

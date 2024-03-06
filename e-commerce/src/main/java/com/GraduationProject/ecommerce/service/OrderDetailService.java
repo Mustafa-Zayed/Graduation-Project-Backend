@@ -1,6 +1,7 @@
 package com.GraduationProject.ecommerce.service;
 
 import com.GraduationProject.ecommerce.configuration.JwtRequestFilter;
+import com.GraduationProject.ecommerce.dao.CartDao;
 import com.GraduationProject.ecommerce.dao.OrderDetailDao;
 import com.GraduationProject.ecommerce.dao.ProductDao;
 import com.GraduationProject.ecommerce.dao.UserDao;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class OrderDetailService {
@@ -20,17 +22,28 @@ public class OrderDetailService {
     private ProductDao productDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private CartDao cartDao;
 
-    public void placeOrder(OrderInput orderInput) {
+
+    /**
+     * isCartCheckout -> true: this indicates the products in the cart,
+     * so we will place the order and then empty the cart.
+     * <p>
+     * isCartCheckout -> false: this indicates a single product, so we just place the order.
+     */
+    public void placeOrder(OrderInput orderInput, boolean isCartCheckout) {
 
         List<OrderProductQuantity> list = orderInput.getOrderProductQuantityList();
 
         String currentUser = JwtRequestFilter.CURRENT_USER;
-        User user = userDao.findById(currentUser).get();
+        User user = userDao.findById(currentUser).orElseThrow(
+                () -> new NoSuchElementException("The user not found"));
 
         list.forEach(e -> {
 
-            Product product = productDao.findById(e.getProductId()).get();
+            Product product = productDao.findById(e.getProductId()).orElseThrow(
+                    () -> new NoSuchElementException("The product not found"));
 
             OrderDetail orderDetail = new OrderDetail(
                     orderInput.getFullName(),
@@ -46,6 +59,12 @@ public class OrderDetailService {
             orderDetailDao.save(orderDetail);
         });
 
+        // empty the cart.
+        if (isCartCheckout) {
+            List<Cart> cartList = cartDao.findByUser(user); // List<Cart> cartList = cartService.getCartDetails();
+
+            cartList.forEach(cart -> cartDao.delete(cart));
+        }
     }
 }
 /*

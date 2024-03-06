@@ -1,6 +1,7 @@
 package com.GraduationProject.ecommerce.service;
 
 import com.GraduationProject.ecommerce.dao.ProductDao;
+import com.GraduationProject.ecommerce.entity.Cart;
 import com.GraduationProject.ecommerce.entity.ImageModel;
 import com.GraduationProject.ecommerce.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.List;
 @Service
 public class ProductService {
 
+    @Autowired
+    private CartService cartService;
     @Autowired
     private ProductDao productDao;
 
@@ -46,6 +49,9 @@ public class ProductService {
         }
     }
 
+    /**
+     * After clicking on the <b>View Details</b> button.
+     */
     public Product getProductDetailsById(Integer productId) {
         return productDao.findById(productId).get();
     }
@@ -56,21 +62,29 @@ public class ProductService {
         return product;
     }
 
+    /**
+     * Used when buying a single product by clicking on the <b>Buy Now</b> button
+     * or buying the entire cart by clicking on the <b>Checkout</b> button.
+     */
     public List<Product> getProductDetails(boolean isSingleProductCheckout, Integer productId) {
+
+        List<Product> products = new ArrayList<>();
+
         if (isSingleProductCheckout) {
             // we are going to buy a single product.
 
-            List<Product> list = new ArrayList<>();
             Product product = productDao.findById(productId).get();
-            list.add(product);
-            return list;
+            products.add(product);
 
         } else {
             // we are going to check out the entire cart.
 
+            List<Cart> cartDetails = cartService.getCartDetails();
+            cartDetails.forEach(cart -> products.add(cart.getProduct()));
 
+//            products = cartDetails.stream().map(Cart::getProduct).toList();
         }
 
-        return new ArrayList<>();
+        return products;
     }
 }
