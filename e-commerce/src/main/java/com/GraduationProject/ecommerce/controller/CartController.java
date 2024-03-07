@@ -33,4 +33,11 @@ public class CartController {
     public List<Cart> getCartDetails() {
         return cartService.getCartDetails();
     }
+
+    @PreAuthorize("hasRole('User')")
+    @GetMapping("/deleteCartItem/{cartId}")
+    public Cart deleteCartItem(@PathVariable Integer cartId) {
+        return cartService.deleteCartItem(cartId);
+    }
+
 }

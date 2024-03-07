@@ -58,4 +58,14 @@ public class CartService {
 
         return cartDao.findByUser(user);
     }
+
+    public Cart deleteCartItem(Integer cartId){
+
+        Cart deletedCart = cartDao.findById(cartId).orElseThrow(
+                () -> new NoSuchElementException("The cart not found"));
+
+        cartDao.delete(deletedCart);
+
+        return deletedCart;
+    }
 }
