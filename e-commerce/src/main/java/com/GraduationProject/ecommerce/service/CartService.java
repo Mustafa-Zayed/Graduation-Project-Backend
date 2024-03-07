@@ -30,21 +30,31 @@ public class CartService {
         User user = userDao.findById(currentUser).orElseThrow(
                 () -> new NoSuchElementException("The user not found"));
 
+        if (cartDao.findByProductAndUser(product, user).isPresent())
+            return null;
+
+//        List<Cart> cartList = cartDao.findByUser(user);
+//        for (Cart cart : cartList) {
+//            if (cart.getProduct().equals(product))
+//                return null;
+//        }
+
         Cart cart = new Cart(product, user);
 
         return cartDao.save(cart);
+
     }
 
     public List<Cart> getCartDetails() {
-
-//        List<Product> products = new ArrayList<>();
 
         String currentUser = JwtRequestFilter.CURRENT_USER;
         User user = userDao.findById(currentUser).orElseThrow(
                 () -> new NoSuchElementException("The user not found"));
 
+//        List<Product> products = new ArrayList<>();
 //        List<Cart> carts = cartDao.findByUser(user);
 //        carts.forEach(cart -> products.add(cart.getProduct()));
+//        return products;
 
         return cartDao.findByUser(user);
     }
