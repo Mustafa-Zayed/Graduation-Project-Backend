@@ -9,6 +9,7 @@ import com.GraduationProject.ecommerce.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -66,30 +67,31 @@ public class OrderDetailService {
             cartList.forEach(cart -> cartDao.delete(cart));
         }
     }
-}
-/*
-*
-* public void placeOrder(OrderInput orderInput) {
-        List<OrderProductQuantity> orderProductQuantityList = orderInput.getOrderProductQuantityList();
 
+    /**
+     * When clicking on <b>My Orders</b> button, this method will be called.
+     * <p> Restricted to the logged-in user only.
+     *
+     * @return list of the order details for the current user.
+     */
+    public List<OrderDetail> getOrderDetails() {
         String currentUser = JwtRequestFilter.CURRENT_USER;
-        User user = userDao.findById(currentUser).get();
+        User user = userDao.findById(currentUser).orElseThrow(
+                () -> new NoSuchElementException("The user not found"));
 
-        for (OrderProductQuantity o : orderProductQuantityList) {
+        return orderDetailDao.findByUser(user);
+    }
 
-            Product product = productDao.findById(o.getProductId()).get();
+    /**
+     * When clicking on <b>Order Information</b> button, this method will be called.
+     * <p> Restricted to the admin only.
+     *
+     * @return list of all the order details in the database.
+     */
+    public List<OrderDetail> getAllOrderDetails() {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        orderDetailDao.findAll().forEach(orderDetailList::add);
 
-            OrderDetail orderDetail = new OrderDetail(
-                    orderInput.getFullName(),
-                    orderInput.getFullAddress(),
-                    orderInput.getContactNumber(),
-                    orderInput.getAlternateContactNumber(),
-                    ORDER_PLACED,
-                    product.getProductDiscountedPrice() * o.getQuantity(),
-                    product,
-                    user
-            );
-
-            orderDetailDao.save(orderDetail);
-        }
-}*/
+        return orderDetailList;
+    }
+}
