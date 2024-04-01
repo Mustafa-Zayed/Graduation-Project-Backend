@@ -88,10 +88,28 @@ public class OrderDetailService {
      *
      * @return list of all the order details in the database.
      */
-    public List<OrderDetail> getAllOrderDetails() {
+    public List<OrderDetail> getAllOrderDetails(String status) {
         List<OrderDetail> orderDetailList = new ArrayList<>();
-        orderDetailDao.findAll().forEach(orderDetailList::add);
+
+        if (status.equals("All"))
+            orderDetailDao.findAll().forEach(orderDetailList::add);
+        else
+            return orderDetailDao.findByOrderStatus(status);
 
         return orderDetailList;
+    }
+
+    /**
+     * When clicking on <b>Mark as Delivered</b> button, this method will be called.
+     * <p> Restricted to the admin only.
+     *
+     * @return the updated order detail with the Delivered status.
+     */
+    public OrderDetail markOrderAsDelivered(Integer orderId) {
+        OrderDetail orderDetail = orderDetailDao.findById(orderId).orElseThrow(
+                () -> new NoSuchElementException("The order not found"));
+
+        orderDetail.setOrderStatus("Delivered");
+        return orderDetailDao.save(orderDetail);
     }
 }

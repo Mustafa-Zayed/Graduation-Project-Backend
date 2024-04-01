@@ -12,4 +12,7 @@ import java.util.List;
 public interface OrderDetailDao extends CrudRepository<OrderDetail, Integer> {
     @Query("SELECT od FROM OrderDetail od WHERE od.user = ?1")
     List<OrderDetail> findByUser(User user);
+
+    @Query("SELECT od FROM OrderDetail od WHERE od.orderStatus = ?1")
+    List<OrderDetail> findByOrderStatus(String orderStatus);
 }
