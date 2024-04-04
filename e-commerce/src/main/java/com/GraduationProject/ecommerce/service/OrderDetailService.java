@@ -6,6 +6,10 @@ import com.GraduationProject.ecommerce.dao.OrderDetailDao;
 import com.GraduationProject.ecommerce.dao.ProductDao;
 import com.GraduationProject.ecommerce.dao.UserDao;
 import com.GraduationProject.ecommerce.entity.*;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,10 @@ import java.util.NoSuchElementException;
 public class OrderDetailService {
 
     private static final String ORDER_PLACED = "Placed";
+    private static final String KEY = "rzp_test_ZEtM44rdrx4VqS";
+    private static final String KEY_SECRET = "Cy7sL2R3q46Ego39rFojbKCR";
+    private static final String CURRENCY = "EGP";
+
     @Autowired
     private OrderDetailDao orderDetailDao;
     @Autowired
@@ -54,7 +62,8 @@ public class OrderDetailService {
                     ORDER_PLACED,
                     e.getQuantity() * product.getProductDiscountedPrice(),
                     product,
-                    user
+                    user,
+                    orderInput.getTransactionId()
             );
 
             orderDetailDao.save(orderDetail);
@@ -111,5 +120,46 @@ public class OrderDetailService {
 
         orderDetail.setOrderStatus("Delivered");
         return orderDetailDao.save(orderDetail);
+    }
+
+    /**
+     * A method to create a transaction using the Razorpay payment gateway API.
+     *
+     * @param amount The amount of the transaction
+     * @return The transaction details created
+     */
+    public TransactionDetails createTransaction(Double amount) {
+        try {
+            RazorpayClient razorpayClient = new RazorpayClient(KEY, KEY_SECRET);
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("amount", amount * 100); // converts the amount to the smallest currency unit as pennies or piasters by multiplying by 100.
+            jsonObject.put("currency", CURRENCY);
+
+            Order order = razorpayClient.orders.create(jsonObject);
+
+            return prepareTransactionDetail(order);
+
+        } catch (RazorpayException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Extracts the id, amount, and currency from the order.
+     * It then creates a new TransactionDetails object with these extracted values and returns it
+     *
+     * @param order the Order object containing the details needed for the transaction
+     * @return a new TransactionDetails object initialized with orderId, orderAmount, and orderCurrency
+     */
+    private TransactionDetails prepareTransactionDetail(Order order) {
+
+        String orderId = order.get("id");
+        String currency = order.get("currency");
+        Integer amount = order.get("amount");
+
+        return new TransactionDetails(orderId, currency, amount, KEY);
     }
 }

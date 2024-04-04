@@ -24,12 +24,13 @@ public class OrderDetail {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    private String transactionId;
 
     // constructors
     public OrderDetail() {
     }
 
-    public OrderDetail(String orderFullName, String orderFullAddress, String orderContactNumber, String orderAlternateContactNumber, String orderStatus, Double orderAmount, Product product, User user) {
+    public OrderDetail(String orderFullName, String orderFullAddress, String orderContactNumber, String orderAlternateContactNumber, String orderStatus, Double orderAmount, Product product, User user, String transactionId) {
         this.orderFullName = orderFullName;
         this.orderFullAddress = orderFullAddress;
         this.orderContactNumber = orderContactNumber;
@@ -38,6 +39,7 @@ public class OrderDetail {
         this.orderAmount = orderAmount;
         this.product = product;
         this.user = user;
+        this.transactionId = transactionId;
     }
 
     // getters & setters
@@ -111,5 +113,13 @@ public class OrderDetail {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }
